@@ -1,10 +1,15 @@
-(venv) PS C:\Users\Aanjaney Shukla\OneDrive\Pictures\Desktop\tradexa_box_selector\config> python manage.py test
+# Test Output
+
+```text
 Found 5 test(s).
 Creating test database for alias 'default'...
 System check identified no issues (0 silenced).
 .....
+
 ----------------------------------------------------------------------
 Ran 5 tests in 0.014s
 
 OK
+
 Destroying test database for alias 'default'...
+```
