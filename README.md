@@ -32,7 +32,6 @@ The recommendation algorithm selects the lowest-cost box that can safely accommo
 * Python 3
 * Django
 * Django REST Framework (DRF)
-* SQLite3
 
 ---
 
