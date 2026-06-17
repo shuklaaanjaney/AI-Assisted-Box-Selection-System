@@ -2,9 +2,9 @@
 
 ## Overview
 
-This project is a Django REST Framework based application developed for an e-commerce warehouse scenario.
+This project is a Django REST Framework (DRF) based box recommendation system designed for an e-commerce warehouse scenario.
 
-When a customer places an order, the warehouse team needs to determine which shipping box should be used. The recommendation process considers:
+When a customer places an order, the system recommends the most suitable shipping box by evaluating:
 
 * Product dimensions
 * Product weight
@@ -12,22 +12,20 @@ When a customer places an order, the warehouse team needs to determine which shi
 * Box weight capacity
 * Box cost
 
-The system recommends the most suitable box while ensuring that the product can fit safely within the box and that the box can support the product's weight.
+The objective is to select a box that can safely accommodate the product while minimizing packaging cost and reducing wasted space.
 
 ---
 
 ## Business Objective
 
-The primary objective is to recommend a shipping box that satisfies operational constraints while minimizing shipping cost.
+Warehouses often maintain multiple box sizes with different costs and capacities. Selecting an unsuitable box can increase shipping expenses, waste packaging material, or fail to protect the product during transit.
 
-The recommendation strategy prioritizes:
+This system automates box selection using the following priority:
 
 1. Dimension compatibility
 2. Weight compatibility
 3. Lowest box cost
 4. Least unused space when costs are equal
-
-This approach helps avoid selecting oversized boxes while still keeping packaging costs low.
 
 ---
 
@@ -37,9 +35,12 @@ This approach helps avoid selecting oversized boxes while still keeping packagin
 * Box Management API
 * Order Management API
 * Box Recommendation API
-* Django Admin Support
-* Automated Test Cases
-* REST APIs built using Django REST Framework
+* Django Admin Integration
+* Automated Unit Tests
+* Product Rotation Support
+* Weight Capacity Validation
+* Model-Level Data Validation
+* RESTful APIs using Django REST Framework
 
 ---
 
@@ -76,19 +77,17 @@ Clone the repository:
 git clone <repository-url>
 ```
 
-Navigate to the project directory:
+Move to the project directory:
 
 ```bash
 cd AI-Assisted-Box-Selection-System
 ```
 
-Create a virtual environment:
+Create and activate a virtual environment:
 
 ```bash
 python -m venv venv
 ```
-
-Activate the environment:
 
 Windows:
 
@@ -163,38 +162,64 @@ Sample Response:
 
 ---
 
-## Recommendation Logic
+## Recommendation Algorithm
 
 The recommendation process follows these steps:
 
-1. Retrieve the product details.
-2. Identify boxes that can accommodate the product dimensions.
-3. Verify that the box can support the product weight.
-4. Calculate unused space for each valid box.
-5. Select the lowest-cost valid box.
-6. If multiple boxes have the same cost, select the box with the least unused space.
+1. Retrieve the selected product.
+2. Check whether the product can fit inside each available box.
+3. Evaluate all possible product orientations (rotation support).
+4. Verify that the box weight capacity can support the product.
+5. Calculate unused space for every valid box.
+6. Select the lowest-cost valid box.
+7. If multiple boxes have the same cost, choose the box with the least unused space.
 
-If no suitable box is found, the system returns no recommendation.
+If no suitable box exists, the system returns no recommendation.
+
+---
+
+## Validation Rules
+
+### Product Validation
+
+The system prevents:
+
+* Negative length values
+* Negative width values
+* Negative height values
+* Negative weight values
+
+### Box Validation
+
+The system prevents:
+
+* Negative dimensions
+* Negative weight capacity
+* Negative box cost
 
 ---
 
 ## Assumptions
 
 * One product is evaluated at a time.
-* Product dimensions and weight are expected to be valid values.
+* Product dimensions represent actual package dimensions.
 * Box dimensions represent usable internal dimensions.
+* Products may be rotated to fit inside a box.
 * A valid recommendation must satisfy both dimension and weight requirements.
 * Cost is prioritized over unused space.
 
 ---
 
-## Edge Cases Considered
+## Edge Cases Covered
 
-* Product does not fit in any available box.
-* Product exceeds the weight capacity of available boxes.
+* Product does not fit inside any available box.
+* Product exceeds the weight capacity of all boxes.
+* Product only fits after rotation.
 * Multiple boxes satisfy the requirements.
 * Multiple boxes have different costs.
-* Multiple boxes have the same cost but different amounts of unused space.
+* Multiple boxes have identical costs but different unused space values.
+* Invalid negative product dimensions.
+* Invalid negative box dimensions.
 
 ---
 
@@ -202,32 +227,44 @@ If no suitable box is found, the system returns no recommendation.
 
 The current implementation focuses on the assignment requirements and does not include:
 
-* Product rotation/orientation optimization.
-* Packing multiple products into a single box.
-* Quantity-based packing calculations.
-* Advanced bin-packing or warehouse optimization algorithms.
+* Multiple products per order
+* Quantity-based packing calculations
+* Warehouse packing optimization
+* Advanced 3D bin-packing algorithms
 
 These can be considered future enhancements depending on business requirements.
 
 ---
 
-## Running Tests
+## Testing
 
-Run all tests using:
+Run all tests:
 
 ```bash
 python manage.py test
 ```
 
-Current test coverage includes:
+Current automated test coverage includes:
 
 * Product creation validation
-* Recommendation service validation
+* Box recommendation validation
+* Cheapest box selection
 * No suitable box scenario
-* Lowest-cost box selection
+* Product rotation handling
+* Weight capacity validation
+* Product model validation
+* Box model validation
 * Recommendation API endpoint testing
 
-Test execution output is available in:
+### Current Test Results
+
+```text
+Ran 9 tests
+
+OK
+```
+
+Full test execution output is available in:
 
 ```text
 TEST_OUTPUT.md
@@ -237,7 +274,7 @@ TEST_OUTPUT.md
 
 ## Additional Documentation
 
-The repository also contains:
+The repository contains:
 
 * README.md
 * AI_USAGE.md
